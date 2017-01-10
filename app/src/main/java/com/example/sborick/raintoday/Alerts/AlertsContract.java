@@ -8,6 +8,7 @@ public interface AlertsContract {
         void setLocationTexts(String lat, String lon);
         void setCityText(String name);
         void setCutoffText(int cutoff);
+        void makeToast(String text);
     }
 
     interface Presenter{

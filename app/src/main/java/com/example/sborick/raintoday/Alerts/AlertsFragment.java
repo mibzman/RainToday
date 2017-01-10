@@ -3,6 +3,7 @@ package com.example.sborick.raintoday.Alerts;
 import android.support.v4.app.Fragment;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sborick.raintoday.R;
 
@@ -36,25 +37,21 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
         presenter.getSavedLocation();
     }
 
+    @Override
+    public void setPresenter(AlertsContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Click(R.id.search)
     void searchForCity(){
         presenter.searchCityName(city.getText().toString());
     }
 
-    @Click(R.id.setLocation)
-    void setLocation(){
+    @Click(R.id.save)
+    void save(){
+        presenter.saveCutoff(Integer.parseInt(cutoff.getText().toString()));
         presenter.saveLocation(lat.getText().toString(), lon.getText().toString());
-    }
-
-    @Click(R.id.setCutoff)
-    void setCutoff(){
-        presenter.saveCutoff(Integer.parseInt(lat.getText().toString()));
-    }
-
-
-    @Override
-    public void setPresenter(AlertsContract.Presenter presenter) {
-        this.presenter = presenter;
+        presenter.saveAlarm();
     }
 
     @Override
@@ -71,5 +68,11 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
     @Override
     public void setCutoffText(int cutoffText) {
         this.cutoff.setText("" + cutoffText + "");
+    }
+
+    @Override
+    public void makeToast(String text) {
+        Toast.makeText(getActivity(), text,
+                Toast.LENGTH_LONG).show();
     }
 }

@@ -5,6 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.widget.TextView;
 
 import com.example.sborick.raintoday.R;
@@ -12,7 +15,9 @@ import com.example.sborick.raintoday.R;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class AlertsPresenter implements AlertsContract.Presenter {
@@ -35,8 +40,8 @@ public class AlertsPresenter implements AlertsContract.Presenter {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 19);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 41);
 
         alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                 60 * 1000, alarmIntent);
@@ -76,7 +81,7 @@ public class AlertsPresenter implements AlertsContract.Presenter {
 
     @Override
     public void searchCityName(String name) {
-
+        new GetCityNameTask().execute(name);
     }
 
     @Override
@@ -101,5 +106,37 @@ public class AlertsPresenter implements AlertsContract.Presenter {
         editor.putString("lat", lat);
         editor.putString("lon", lon);
         editor.apply();
+    }
+
+    private class GetCityNameTask extends AsyncTask<String, Void, Address>{
+
+        @Override
+        protected Address doInBackground(String... strings) {
+            if(Geocoder.isPresent()){
+                try {
+                    Geocoder gc = new Geocoder(context);
+                    List<Address> addresses= gc.getFromLocationName(strings[0], 1); // get the found Address Objects
+
+                    for(Address a : addresses){
+                        if(a.hasLatitude() && a.hasLongitude()){
+                            //Double[] output = {a.getLatitude(), a.getLongitude()};
+                            return a;
+                        }
+                    }
+                } catch (IOException e) {
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Address address) {
+            if (address != null){
+                view.setLocationTexts(Double.toString(address.getLatitude()), Double.toString(address.getLongitude()));
+                view.makeToast(address.getAddressLine(0));
+            }else{
+                view.makeToast("City could not be found");
+            }
+        }
     }
 }
