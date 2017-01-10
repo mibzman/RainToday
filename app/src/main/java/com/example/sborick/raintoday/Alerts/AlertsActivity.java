@@ -1,7 +1,6 @@
 package com.example.sborick.raintoday.Alerts;
                 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.example.sborick.raintoday.ActivityUtils;
 import com.example.sborick.raintoday.R;
@@ -10,8 +9,6 @@ import org.androidannotations.annotations.EActivity;
 
 @EActivity(R.layout.activity_alerts)
 public class AlertsActivity extends AppCompatActivity {
-
-    private AlertsPresenter presenter;
 
     @AfterViews
     void afterViewsLoaded() {
@@ -22,6 +19,6 @@ public class AlertsActivity extends AppCompatActivity {
             alertsFragment = new AlertsFragment_();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), alertsFragment, R.id.contentFrame);
         }
-        presenter = new AlertsPresenter(alertsFragment, this);
+        AlertsPresenter presenter = new AlertsPresenter(alertsFragment, this);
     }
 }

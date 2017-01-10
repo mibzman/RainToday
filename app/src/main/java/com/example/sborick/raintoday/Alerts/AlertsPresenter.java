@@ -8,12 +8,7 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
-import android.widget.TextView;
-
-import com.example.sborick.raintoday.R;
-
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.ViewById;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -124,6 +119,7 @@ public class AlertsPresenter implements AlertsContract.Presenter {
                         }
                     }
                 } catch (IOException e) {
+                    Log.d("asyncTask", e.getMessage());
                 }
             }
             return null;

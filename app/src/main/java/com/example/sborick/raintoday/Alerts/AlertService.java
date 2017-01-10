@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AlertService extends IntentService {
 
@@ -34,7 +31,7 @@ public class AlertService extends IntentService {
         String location = getLocation();
         String weatherData = getWeatherData(location);
         int chanceOfRain = rainToday(weatherData);
-        if (chanceOfRain >  getCutofPoint()){
+        if (chanceOfRain >  getCutoffPoint()){
             createNotification("Chance of Rain", chanceOfRain);
         }
         else{
@@ -43,7 +40,6 @@ public class AlertService extends IntentService {
     }
 
     public int rainToday(String data){
-        int output = 0;
         try {
             JSONObject jsonObject = new JSONObject(data);
             JSONObject jdaily = jsonObject.getJSONObject("daily");
@@ -56,13 +52,12 @@ public class AlertService extends IntentService {
                 double prob = object.getDouble("precipProbability");
                 total += prob;
             }
-            output = (int) Math.floor((total/n)*100);
+            return (int) Math.floor((total/n)*100);
         }
         catch (Exception e){
             Log.d("service", e.toString());
             return -1;
         }
-        return output;
     }
 
     public String getWeatherData(String location) {
@@ -79,16 +74,14 @@ public class AlertService extends IntentService {
 
             reader = new BufferedReader(new InputStreamReader(stream));
 
-            StringBuffer buffer = new StringBuffer();
-            String line = "";
+            StringBuilder buffer = new StringBuilder();
+            String line;
 
             while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             output = buffer.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -120,7 +113,7 @@ public class AlertService extends IntentService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        int mNotificationId = 001;
+        int mNotificationId = 1;
         NotificationManager mNotifyMgr =
                 (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
@@ -133,9 +126,9 @@ public class AlertService extends IntentService {
         return lat + "," + lon;
     }
 
-    public int getCutofPoint(){
+    public int getCutoffPoint(){
         SharedPreferences preferences = getSharedPreferences("data", 0);
-        return preferences.getInt("cutofPoint", 30);
+        return preferences.getInt("cutoff", 30);
     }
 
 }

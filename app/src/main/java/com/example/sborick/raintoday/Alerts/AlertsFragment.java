@@ -2,7 +2,6 @@ package com.example.sborick.raintoday.Alerts;
 
 import android.support.v4.app.Fragment;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sborick.raintoday.R;

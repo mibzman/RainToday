@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Search"
+            android:text="@string/search"
             android:id="@+id/search"/>
     </LinearLayout>
     <LinearLayout
@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Cutoff Chance of Rain Percentage:"/>
+            android:text="@string/cutoff_chance_of_rain_percentage"/>
 
         <EditText
             android:layout_width="0dp"
@@ -59,7 +59,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Save Alarm"
+        android:text="@string/save_alarm"
         android:id="@+id/save"/>
 
 </LinearLayout>
