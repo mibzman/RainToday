@@ -15,6 +15,7 @@ public interface AlertsContract {
         void saveCutoff(int cutoff);
         void getCutoff();
         void saveAlarm();
+        void cancelAlarm();
         void searchCityName(String name);
         void getCityName();
         void getSavedLocation();

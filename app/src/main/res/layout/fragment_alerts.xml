@@ -61,5 +61,10 @@
         android:layout_height="wrap_content"
         android:text="@string/save_alarm"
         android:id="@+id/save"/>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_alarm"
+        android:id="@+id/cancel"/>
 
 </LinearLayout>

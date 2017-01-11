@@ -28,15 +28,19 @@ public class AlertService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("service", "service hit");
         String location = getLocation();
         String weatherData = getWeatherData(location);
         int chanceOfRain = rainToday(weatherData);
         if (chanceOfRain >  getCutoffPoint()){
             createNotification("Chance of Rain", chanceOfRain);
+        }else if (chanceOfRain < getCutoffPoint() && chanceOfRain > 0){
+            createNotification("Low Chance of Rain", chanceOfRain);
         }
         else{
             createNotification("No Chance of Rain", chanceOfRain);
         }
+        //createNotification("Chance of Rain", 40);
     }
 
     public int rainToday(String data){
@@ -66,7 +70,9 @@ public class AlertService extends IntentService {
         String output = "";
 
         try {
-            URL url = new URL("https://api.darksky.net/forecast/807b43d6ad36e9be1387424334babb16/"+ location +"?exclude=currently,minutely,hourly,alerts,flags");
+            String resource = "https://api.darksky.net/forecast/807b43d6ad36e9be1387424334babb16/"+ location +"?exclude=currently,minutely,hourly,alerts,flags";
+            Log.d("service", resource);
+            URL url = new URL(resource);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -99,12 +105,12 @@ public class AlertService extends IntentService {
         return output;
     }
 
-    public void createNotification(String city, int chance) {
+    private void createNotification(String city, int chance) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle(city)
-                        .setContentText(chance + "% chance of rain today.");
+                        .setContentText(chance + "% chance of precipitation today.");
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         this,
@@ -113,20 +119,20 @@ public class AlertService extends IntentService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        int mNotificationId = 1;
+        int mNotificationId = 001;
         NotificationManager mNotifyMgr =
                 (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
-    public String getLocation(){
+    private String getLocation(){
         SharedPreferences preferences = getSharedPreferences("data", 0);
         String lat = preferences.getString("lat", "0");
-        String lon = preferences.getString("long", "0");
+        String lon = preferences.getString("lon", "0");
         return lat + "," + lon;
     }
 
-    public int getCutoffPoint(){
+    private int getCutoffPoint(){
         SharedPreferences preferences = getSharedPreferences("data", 0);
         return preferences.getInt("cutoff", 30);
     }

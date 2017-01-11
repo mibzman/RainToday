@@ -15,18 +15,22 @@ import org.androidannotations.annotations.ViewById;
 @EFragment(R.layout.fragment_alerts)
 public class AlertsFragment extends Fragment implements AlertsContract.View {
 
-    AlertsContract.Presenter presenter;
+    private AlertsContract.Presenter presenter;
 
     @ViewById
+    private
     EditText city;
 
     @ViewById
+    private
     EditText lat;
 
     @ViewById
+    private
     EditText lon;
 
     @ViewById
+    private
     EditText cutoff;
 
     @AfterViews
@@ -34,6 +38,7 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
         presenter.getCityName();
         presenter.getCutoff();
         presenter.getSavedLocation();
+
     }
 
     @Override
@@ -51,6 +56,11 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
         presenter.saveCutoff(Integer.parseInt(cutoff.getText().toString()));
         presenter.saveLocation(lat.getText().toString(), lon.getText().toString());
         presenter.saveAlarm();
+    }
+
+    @Click(R.id.cancel)
+    void cancel(){
+        presenter.cancelAlarm();
     }
 
     @Override

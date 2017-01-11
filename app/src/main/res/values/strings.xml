@@ -3,4 +3,5 @@
     <string name="search">Search</string>
     <string name="cutoff_chance_of_rain_percentage">Cutoff Chance of Rain Percentage:</string>
     <string name="save_alarm">Save Alarm</string>
+    <string name="cancel_alarm">Cancel Alarm</string>
 </resources>
