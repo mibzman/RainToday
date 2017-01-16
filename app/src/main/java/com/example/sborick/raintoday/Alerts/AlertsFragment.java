@@ -18,19 +18,15 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
     private AlertsContract.Presenter presenter;
 
     @ViewById
-    private
     EditText city;
 
     @ViewById
-    private
     EditText lat;
 
     @ViewById
-    private
     EditText lon;
 
     @ViewById
-    private
     EditText cutoff;
 
     @AfterViews
