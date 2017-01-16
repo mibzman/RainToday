@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 public class AlertService extends IntentService {
@@ -32,15 +33,47 @@ public class AlertService extends IntentService {
         String location = getLocation();
         String weatherData = getWeatherData(location);
         int chanceOfRain = rainToday(weatherData);
-        if (chanceOfRain >  getCutoffPoint()){
-            createNotification("Chance of Rain", chanceOfRain);
-        }else if (chanceOfRain < getCutoffPoint() && chanceOfRain > 0){
-            createNotification("Low Chance of Rain", chanceOfRain);
+        if (isInternetAvailable()){
+            if (chanceOfRain >  getCutoffPoint()){
+                createNotification("Chance of Rain", chanceOfRain);
+            }else if (chanceOfRain < getCutoffPoint() && chanceOfRain > 0){
+                createNotification("Low Chance of Rain", chanceOfRain);
+            }
+            else{
+                createNotification("No Chance of Rain", chanceOfRain);
+            }
+        }else{
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle("No Internet Connection")
+                            .setContentText("This has been a courtesy notification");
+            PendingIntent resultPendingIntent =
+                    PendingIntent.getActivity(
+                            this,
+                            0,
+                            new Intent(this, AlertsActivity_.class),
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+            int mNotificationId = 001;
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+            mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
-        else{
-            createNotification("No Chance of Rain", chanceOfRain);
-        }
+
         //createNotification("Chance of Rain", 40);
+    }
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     public int rainToday(String data){
