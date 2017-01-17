@@ -34,7 +34,7 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
         presenter.getCityName();
         presenter.getCutoff();
         presenter.getSavedLocation();
-
+        //test
     }
 
     @Override
