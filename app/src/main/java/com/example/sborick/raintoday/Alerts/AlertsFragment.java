@@ -10,12 +10,16 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 
 @EFragment(R.layout.fragment_alerts)
 public class AlertsFragment extends Fragment implements AlertsContract.View {
 
     private AlertsContract.Presenter presenter;
+
+    @Pref
+    DataSaver_ dataSaver;
 
     @ViewById
     EditText city;
@@ -31,9 +35,9 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
 
     @AfterViews
     void setTexts(){
-        presenter.getCityName();
-        presenter.getCutoff();
-        presenter.getSavedLocation();
+        presenter.getCityName(dataSaver);
+        presenter.getCutoff(dataSaver);
+        presenter.getSavedLocation(dataSaver);
         //test
     }
 
@@ -49,8 +53,8 @@ public class AlertsFragment extends Fragment implements AlertsContract.View {
 
     @Click(R.id.save)
     void save(){
-        presenter.saveCutoff(Integer.parseInt(cutoff.getText().toString()));
-        presenter.saveLocation(lat.getText().toString(), lon.getText().toString());
+        presenter.saveCutoff(Integer.parseInt(cutoff.getText().toString()), dataSaver);
+        presenter.saveLocation(lat.getText().toString(), lon.getText().toString(), dataSaver);
         presenter.saveAlarm();
     }
 

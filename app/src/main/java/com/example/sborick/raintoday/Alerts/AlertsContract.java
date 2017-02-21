@@ -12,13 +12,13 @@ public interface AlertsContract {
     }
 
     interface Presenter{
-        void saveCutoff(int cutoff);
-        void getCutoff();
+        void saveCutoff(int cutoff, DataSaver_ dataSaver);
+        void getCutoff(DataSaver_ dataSaver);
         void saveAlarm();
         void cancelAlarm();
         void searchCityName(String name);
-        void getCityName();
-        void getSavedLocation();
-        void saveLocation(String lat, String lon);
+        void getCityName(DataSaver_ dataSaver);
+        void getSavedLocation(DataSaver_ dataSaver);
+        void saveLocation(String lat, String lon, DataSaver_ dataSaver);
     }
 }

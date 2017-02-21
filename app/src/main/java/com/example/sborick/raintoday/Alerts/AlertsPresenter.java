@@ -33,17 +33,13 @@ public class AlertsPresenter implements AlertsContract.Presenter {
     }
 
     @Override
-    public void saveCutoff(int cutoff) {
-        SharedPreferences preferences = context.getSharedPreferences(DATA, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("cutoff", cutoff);
-        editor.apply();
+    public void saveCutoff(int cutoff, DataSaver_ dataSaver) {
+        dataSaver.cutoff().put(cutoff);
     }
 
     @Override
-    public void getCutoff() {
-        SharedPreferences preferences = context.getSharedPreferences(DATA, 0);
-        int cutoff = preferences.getInt("cutoff", 30);
+    public void getCutoff(DataSaver_ dataSaver) {
+        int cutoff = dataSaver.cutoff().get();
         view.setCutoffText(cutoff);
     }
 
@@ -87,27 +83,22 @@ public class AlertsPresenter implements AlertsContract.Presenter {
     }
 
     @Override
-    public void getCityName() {
-        SharedPreferences preferences = context.getSharedPreferences(DATA, 0);
-        String city = preferences.getString("city", "Lakewood");
+    public void getCityName(DataSaver_ dataSaver) {
+        String city = dataSaver.city().get();
         view.setCityText(city);
     }
 
     @Override
-    public void getSavedLocation() {
-        SharedPreferences preferences = context.getSharedPreferences(DATA, 0);
-        String lat = preferences.getString("lat", "41.4820");
-        String lon = preferences.getString("long", "-81.7982");
+    public void getSavedLocation(DataSaver_ dataSaver) {
+        String lat = dataSaver.lat().get();
+        String lon = dataSaver.lon().get();
         view.setLocationTexts(lat, lon);
     }
 
     @Override
-    public void saveLocation(String lat, String lon) {
-        SharedPreferences preferences = context.getSharedPreferences(DATA, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("lat", lat);
-        editor.putString("lon", lon);
-        editor.apply();
+    public void saveLocation(String lat, String lon, DataSaver_ dataSaver) {
+        dataSaver.lat().put(lat);
+        dataSaver.lon().put(lon);
     }
 
     private class GetCityNameTask extends AsyncTask<String, Void, Address>{

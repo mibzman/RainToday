@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.example.sborick.raintoday.R;
 
+import org.androidannotations.annotations.EService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,17 +23,22 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 
+@EService
 public class AlertService extends IntentService {
 
     public AlertService() {
         super("ServiceIntentService");
     }
 
+    @Pref
+    DataSaver_ dataSaver;
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d("service", "service hit");
         String location = getLocation();
-        String weatherData = getWeatherData(location);
+        WeatherDataGetter getter = new WeatherDataGetter();
+        String weatherData = getter.getWeatherData(location);
         int chanceOfRain = rainToday(weatherData);
         if (isInternetAvailable()){
             if (chanceOfRain >  getCutoffPoint()){
@@ -97,46 +104,6 @@ public class AlertService extends IntentService {
         }
     }
 
-    public String getWeatherData(String location) {
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
-        String output = "";
-
-        try {
-            String resource = "https://api.darksky.net/forecast/807b43d6ad36e9be1387424334babb16/"+ location +"?exclude=currently,minutely,hourly,alerts,flags";
-            Log.d("service", resource);
-            URL url = new URL(resource);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-
-            InputStream stream = connection.getInputStream();
-
-            reader = new BufferedReader(new InputStreamReader(stream));
-
-            StringBuilder buffer = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line).append("\n");
-            }
-
-            output = buffer.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return output;
-    }
 
     private void createNotification(String city, int chance) {
         NotificationCompat.Builder mBuilder =
@@ -159,15 +126,11 @@ public class AlertService extends IntentService {
     }
 
     private String getLocation(){
-        SharedPreferences preferences = getSharedPreferences("data", 0);
-        String lat = preferences.getString("lat", "0");
-        String lon = preferences.getString("lon", "0");
-        return lat + "," + lon;
+        return dataSaver.lat().get() + "," + dataSaver.lon().get();
     }
 
     private int getCutoffPoint(){
-        SharedPreferences preferences = getSharedPreferences("data", 0);
-        return preferences.getInt("cutoff", 30);
+        return dataSaver.cutoff().get();
     }
 
 }

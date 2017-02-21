@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:name=".Alerts.AlertService"
+            android:name=".Alerts.AlertService_"
             android:exported="false" />
 
         <receiver
